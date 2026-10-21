@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.vaadin' version '24.7.3'
+    id 'jacoco'
+}
+
+group = 'com.northstar'
+version = '1.0.0'
+
+java { sourceCompatibility = JavaVersion.VERSION_21; targetCompatibility = JavaVersion.VERSION_21 }
+
+repositories { mavenCentral() }
+
+ext { set('vaadinVersion', '24.7.3') }
+
+dependencies {
+    implementation 'com.vaadin:vaadin-spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    implementation 'org.apache.commons:commons-csv:1.13.0'
+    implementation 'com.auth0:java-jwt:4.5.0'
+    implementation('org.apache.commons:commons-compress:1.24.0') { version { strictly '1.24.0' } }
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'com.h2database:h2'
+}
+
+dependencyManagement { imports { mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}" } }
+
+tasks.named('test') { useJUnitPlatform(); finalizedBy jacocoTestReport }
+jacocoTestReport { reports { xml.required = true; html.required = true } }
+
+vaadin { productionMode = project.hasProperty('vaadin.productionMode') }

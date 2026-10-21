@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: northstar
+      POSTGRES_USER: northstar
+      POSTGRES_PASSWORD: northstar_local
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U northstar -d northstar"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  app:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/northstar
+      DATABASE_USER: northstar
+      DATABASE_PASSWORD: northstar_local
+      STORAGE_PATH: /app/storage
+      SESSION_SIGNING_KEY: local-compose-signing-key-change-before-production-2026
+      CORE_MOCK_URL: http://localhost:8080/core-mock
+      CORE_MOCK_CREDENTIAL: local-core-credential-change-before-production
+      COOKIE_SECURE: "false"
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    volumes:
+      - document_data:/app/storage
+    restart: unless-stopped
+volumes:
+  postgres_data:
+  document_data:

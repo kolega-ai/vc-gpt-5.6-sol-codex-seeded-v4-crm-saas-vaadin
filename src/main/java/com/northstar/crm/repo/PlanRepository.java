@@ -1,0 +1,1 @@
+package com.northstar.crm.repo;import com.northstar.crm.domain.PlanDefinition;import org.springframework.data.jpa.repository.JpaRepository;import java.util.*;public interface PlanRepository extends JpaRepository<PlanDefinition,UUID>{Optional<PlanDefinition> findByName(String name);}

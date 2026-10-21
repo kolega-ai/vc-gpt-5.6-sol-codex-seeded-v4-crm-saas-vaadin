@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/northstar}
+    username: ${DATABASE_USER:northstar}
+    password: ${DATABASE_PASSWORD:northstar_local}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+server:
+  port: ${PORT:8080}
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        same-site: strict
+        secure: ${COOKIE_SECURE:false}
+      timeout: 30d
+vaadin:
+  launch-browser: false
+  allowed-packages: com.vaadin,org.vaadin,com.northstar
+app:
+  storage-path: ${STORAGE_PATH:./storage}
+  public-url: ${PUBLIC_URL:http://localhost:8080}
+  session-signing-key: ${SESSION_SIGNING_KEY:local-development-key-change-in-production-32chars}
+  core-mock-url: ${CORE_MOCK_URL:http://localhost:8080/core-mock}
+  core-mock-credential: ${CORE_MOCK_CREDENTIAL:local-core-credential-change-before-production}
+logging:
+  level:
+    org.springframework.security: INFO
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,heapdump,beans
